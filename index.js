@@ -23,7 +23,10 @@ var config = {
     timeout: 15000,
     headless: false,
     devTools: false,
-    slowMo: 10
+    slowMo: 10,
+    noSandbox: false,
+    disableSetuidSandbox: false,
+    disableDevShmUsage: false
 };
 
 folderCheck();
@@ -38,6 +41,9 @@ global.userAgent = '';
 global.disableLaunchReport = false;
 global.noScreenshot = false;
 global.slowMo = config.slowMo;
+global.noSandbox = config.noSandbox;
+global.disableSetuidSandbox = config.disableSetuidSandbox;
+global.disableDevShmUsage = config.disableDevShmUsage;
 
 program
     .version(pjson.version)
@@ -58,6 +64,9 @@ program
     .option('--slowMo <number>', 'specified amount of milliseconds to slow down Puppeteer operations by. Defaults to ' + config.slowMo)
     .option('--networkSpeed <name>', 'simulate connection speeds, options are: gprs, 2g, 3g, 4g, dsl, wifi. Defaults is unset (full speed)')
     .option('--updateBaselineImage', 'automatically update the baseline image after a failed comparison')
+    .option('--noSandbox', 'disable sandboxing')
+    .option('--disableSetuidSandbox', 'disable sandboxing')
+    .option('--disableDevShmUsage', 'prevent puppeteer fron using /dev/shm')
     .parse(process.argv);
 
 program.on('--help', function () {
@@ -100,6 +109,10 @@ global.devTools = program.devTools;
 
 // pass user agent if set (remove wrapped quotes)
 global.userAgent = String(program.userAgent || '').replace(/(^"|"$)/g, '');
+
+global.noSandbox = program.noSandbox;
+global.disableSetuidSandbox = program.disableSetuidSandbox;
+global.disableDevShmUsage = program.disableDevShmUsage;
 
 // used within world.js to import page objects
 var pageObjectPath = path.resolve(config.pageObjects);

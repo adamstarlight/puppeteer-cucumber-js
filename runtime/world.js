@@ -99,15 +99,21 @@ module.exports = async function () {
     this.registerHandler('BeforeScenario', async function () {
 
         if (!global.browser) {
+            var args = [
+                `--window-size=${browserWidth},${browserHeight}`
+            ];
+
+            if (noSandbox) args.push('--no-sandbox');
+            if (disableSetuidSandbox) args.push('--disable-setuid-sandbox');
+            if (disableDevShmUsage) args.push('--disable-dev-shm-usage');
+
             var browserOptions = {
                 headless: headless === true,
                 product: browserName || 'chrome',
                 defaultViewport: null,
                 devtools: devTools === true,
                 slowMo: global.DEFAULT_SLOW_MO, // slow down by specified ms so we can view in headful mode
-                args: [
-                    `--window-size=${browserWidth},${browserHeight}`
-                ]
+                args
             };
 
             if (browserPath !== '') {
